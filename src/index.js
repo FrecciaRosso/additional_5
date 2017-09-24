@@ -1,6 +1,6 @@
 module.exports = function check(str, bracketsConfig) {
   // your solution
-	if (str.length%2 != 0) return false;
+	if (str.length%2 != 0 || str.length == 0) return false;
 	var openingBracks = [];
 	var closingBracks = [];
 	for (var i = 0; i < bracketsConfig.length; i++) {
@@ -14,20 +14,30 @@ module.exports = function check(str, bracketsConfig) {
 	while (strArray.length > 0) {
 		var bracket = strArray.pop();
 		if (openingBracks.indexOf(bracket) == -1 && closingBracks.indexOf(bracket) == -1) return false;
+		var brOpenIndex = openingBracks.indexOf(bracket);
+		var brCloseIndex = closingBracks.indexOf(bracket);
+		if (openingBracks[brOpenIndex] == closingBracks[brCloseIndex]) {
+			if (brackStack.peek() == bracket) {
+				brackStack.pop();
+				continue;
+			}
+			else {
+				brackStack.add(bracket);	//otherwise add bracket to stack
+				continue;
+			}
+		}
 		if (openingBracks.indexOf(bracket) > -1) {	//if the bracket is opening
 			if (strArray.length == 0) {	//if an opening bracket in the last in str, return false
 				return false;
 			}
-			else {
-				brackStack.add(bracket);	//otherwise add bracket to stack
-			}
+			brackStack.add(bracket);	//otherwise add bracket to stack
+			continue;
 		}
 		if (closingBracks.indexOf(bracket) > -1) {	//if the bracket is closing
 			if (brackStack.length() == 0) {	//if stack is empty, return false
 				return false;
 			}
-			var bracketIndex = closingBracks.indexOf(bracket);
-			if (brackStack.peek() != openingBracks[bracketIndex]) {
+			if (brackStack.peek() != openingBracks[brCloseIndex]) {
 				return false;
 			}
 			else {
